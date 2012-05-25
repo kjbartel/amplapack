@@ -7,9 +7,12 @@ present on your computer in order to build this LAPACK library.
 The library is in the form of C++ header files that are available in "inc" directory.
 
 To use the library:
-1) add "inc" to INCLUDE, or use compiler switch "/I inc", 
+1) Download the ampblas library and add the ampblas include folder to your 
+  INCLUDE path; alternatively set the AMPBLAS_INCLUDE_PATH variable to the 
+  include directory of the ampblas library
+2) add "inc" to INCLUDE, or use compiler switch "/I inc", 
   or add "inc" to "Include Directories" in visual studio project properties.
-2) Add "include <amp_lapack.h>" in cpp source file. 
+3) Add "include <amp_lapack.h>" in cpp source file. 
   (There may be new headers that will be introduced in future)
 
  

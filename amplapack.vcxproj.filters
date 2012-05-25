@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="detail">
+      <UniqueIdentifier>{ceb4f1fd-18c7-497f-a788-16c7c314e37c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source">
+      <UniqueIdentifier>{9e5fb035-3104-4d79-a8bb-fe3ac364e92e}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="inc\detail\geqrf.h">
+      <Filter>detail</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\detail\getrf.h">
+      <Filter>detail</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\detail\potrf.h">
+      <Filter>detail</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\amplapack.h" />
+    <ClInclude Include="inc\ampxlapack.h" />
+    <ClInclude Include="inc\ampclapack.h" />
+    <ClInclude Include="inc\amplapack_config.h" />
+    <ClInclude Include="inc\amplapack_runtime.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\geqrf.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\getrf.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\potrf.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
