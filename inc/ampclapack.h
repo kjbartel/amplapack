@@ -57,23 +57,38 @@ struct amplapack_dcomplex
 };
 
 //----------------------------------------------------------------------------
+// Return Status Types
+//----------------------------------------------------------------------------
+
+enum amplapack_status
+{
+    amplapack_success,             // routine completed successfully
+    amplapack_data_error,          // an error with the data prevented completion; see specific routine for details
+    amplapack_argument_error,      // an argument was invalid; see info parameter for enumeration
+    amplapack_memory_error,        // insuffecient memory on the accelerator to complete the operation
+    amplapack_runtime_error,       // an error related to the C++ AMP runtime was encountered
+    amplapack_internal_error,      // an unexpected error was encountered (bad index, out of bounds, etc)
+    amplapack_unknown_error        // catch all 
+};
+
+//----------------------------------------------------------------------------
 // LAPACK Routines
 //---------------------------------------------------------------------------- 
 
-AMPLAPACK_DLL void amplapack_sgetrf(int m, int n, float* a, int lda, int* info);
-AMPLAPACK_DLL void amplapack_dgetrf(int m, int n, double* a, int lda, int* info);
-AMPLAPACK_DLL void amplapack_cgetrf(int m, int n, amplapack_fcomplex* a, int lda, int* info);
-AMPLAPACK_DLL void amplapack_zgetrf(int m, int n, amplapack_dcomplex* a, int lda, int* info);
+AMPLAPACK_DLL amplapack_status amplapack_sgetrf(int m, int n, float* a, int lda, int* info);
+AMPLAPACK_DLL amplapack_status amplapack_dgetrf(int m, int n, double* a, int lda, int* info);
+AMPLAPACK_DLL amplapack_status amplapack_cgetrf(int m, int n, amplapack_fcomplex* a, int lda, int* info);
+AMPLAPACK_DLL amplapack_status amplapack_zgetrf(int m, int n, amplapack_dcomplex* a, int lda, int* info);
 
-AMPLAPACK_DLL void amplapack_sgeqrf(char uplo, int n, float* a, int lda, int* info);
-AMPLAPACK_DLL void amplapack_dgeqrf(char uplo, int n, double* a, int lda, int* info);
-AMPLAPACK_DLL void amplapack_cgeqrf(char uplo, int n, amplapack_fcomplex* a, int lda, int* info);
-AMPLAPACK_DLL void amplapack_zgeqrf(char uplo, int n, amplapack_dcomplex* a, int lda, int* info);
+AMPLAPACK_DLL amplapack_status amplapack_sgeqrf(char uplo, int n, float* a, int lda, int* info);
+AMPLAPACK_DLL amplapack_status amplapack_dgeqrf(char uplo, int n, double* a, int lda, int* info);
+AMPLAPACK_DLL amplapack_status amplapack_cgeqrf(char uplo, int n, amplapack_fcomplex* a, int lda, int* info);
+AMPLAPACK_DLL amplapack_status amplapack_zgeqrf(char uplo, int n, amplapack_dcomplex* a, int lda, int* info);
 
-AMPLAPACK_DLL void amplapack_spotrf(char uplo, int n, float* a, int lda, int* info);
-AMPLAPACK_DLL void amplapack_dpotrf(char uplo, int n, double* a, int lda, int* info);
-AMPLAPACK_DLL void amplapack_cpotrf(char uplo, int n, amplapack_fcomplex* a, int lda, int* info);
-AMPLAPACK_DLL void amplapack_zpotrf(char uplo, int n, amplapack_dcomplex* a, int lda, int* info);
+AMPLAPACK_DLL amplapack_status amplapack_spotrf(char uplo, int n, float* a, int lda, int* info);
+AMPLAPACK_DLL amplapack_status amplapack_dpotrf(char uplo, int n, double* a, int lda, int* info);
+AMPLAPACK_DLL amplapack_status amplapack_cpotrf(char uplo, int n, amplapack_fcomplex* a, int lda, int* info);
+AMPLAPACK_DLL amplapack_status amplapack_zpotrf(char uplo, int n, amplapack_dcomplex* a, int lda, int* info);
 
 #ifdef __cplusplus
 }

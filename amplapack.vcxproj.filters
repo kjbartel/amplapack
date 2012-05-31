@@ -23,6 +23,7 @@
     <ClInclude Include="inc\ampclapack.h" />
     <ClInclude Include="inc\amplapack_config.h" />
     <ClInclude Include="inc\amplapack_runtime.h" />
+    <ClInclude Include="inc\lapack_host.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\geqrf.cpp">

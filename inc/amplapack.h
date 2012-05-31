@@ -25,17 +25,19 @@
 namespace amplapack {
 
 // internal options
-enum class Order {row_major, col_major};
-enum class Transpose {no_trans, trans, conj_trans};
-enum class Uplo {upper, lower};
-enum class Diag {non_unit, unit};
-enum class Side {left, right};
+namespace option {
+enum class ordering {row_major, column_major};
+enum class transpose {no_trans, trans, conj_trans};
+enum class uplo {upper, lower};
+enum class diag {non_unit, unit};
+enum class side {left, right};
+} // namespace option
 
 // exeptions
-class paramater_error
+class argument_error_exception
 {
 public:
-    paramater_error(unsigned int index)
+    argument_error_exception(unsigned int index)
         : index(index) 
     {}
 
@@ -49,10 +51,15 @@ private:
     unsigned int index;
 };
 
-class data_error
+void argument_error(unsigned int index)
+{
+    throw argument_error_exception(index);
+}
+
+class data_error_exception
 {
 public:
-    data_error(unsigned int index)
+    data_error_exception(unsigned int index)
         : index(index) 
     {}
 
@@ -66,7 +73,20 @@ private:
     unsigned int index;
 };
 
-class runtime_error {};
+void data_error(unsigned int index)
+{
+    throw data_error_exception(index);
+}
+
+class runtime_error_exception
+{
+    // TODO: more information?
+};
+
+void runtime_error()
+{
+    throw runtime_error_exception();
+}
 
 } // namespace amplapack
 

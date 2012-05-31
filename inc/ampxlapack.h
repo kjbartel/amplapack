@@ -14,7 +14,7 @@
  * permissions and limitations under the License.
  *---------------------------------------------------------------------------
  * 
- * ampxlapack.h
+ * Overloaded C++ headers
  *
  *---------------------------------------------------------------------------*/
 
@@ -22,5 +22,33 @@
 #ifndef AMPXLAPACK_H
 #define AMPXLAPACK_H
 
+#include "ampclapack.h"
+
+template <typename value_type>
+inline amplapack_status amplapack_potrf(int m, int n, value_type* a, int lda, int* info);
+
+template <>
+inline amplapack_status amplapack_potrf(int m, int n, float* a, int lda, int* info) 
+{
+    return amplapack_spotrf(m, n, a, lda, info);
+}
+
+template <>
+inline amplapack_status amplapack_potrf(int m, int n, double* a, int lda, int* info) 
+{
+    return amplapack_dpotrf(m, n, a, lda, info);
+}
+
+template <>
+inline amplapack_status amplapack_potrf(int m, int n, amplapack_fcomplex* a, int lda, int* info) 
+{
+    return amplapack_cpotrf(m, n, a, lda, info);
+}
+
+template <>
+inline amplapack_status amplapack_potrf(int m, int n, amplapack_dcomplex* a, int lda, int* info) 
+{
+    return amplapack_zpotrf(m, n, a, lda, info);
+}
 
 #endif // AMPXLAPACK_H
