@@ -30,6 +30,7 @@
     <ClInclude Include="inc\lapack_host.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\amplapack_runtime.cpp" />
     <ClCompile Include="src\geqrf.cpp" />
     <ClCompile Include="src\getrf.cpp" />
     <ClCompile Include="src\potrf.cpp" />

@@ -28,8 +28,6 @@
 
 #include <stdint.h>
 
-void sgemm(char transa, char transb, int m, int n, int k, float alpha, const float* a, int lda, const float* b, int ldb, float beta, float* c, int ldc);
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -90,10 +88,22 @@ void LAPACK_ZGETRF(lapack_int*, lapack_int*, void*, lapack_int*, lapack_int*, la
 #define LAPACK_ZGEQRF LAPACK_NAME(zgeqrf, ZGEQRF)
 
 // geqrf signature
-void LAPACK_SGEQRF(lapack_int*, lapack_int*, float*, lapack_int*, float*, lapack_int*, lapack_int*);
-void LAPACK_DGEQRF(lapack_int*, lapack_int*, double*, lapack_int*, double*, lapack_int*, lapack_int*);
-void LAPACK_CGEQRF(lapack_int*, lapack_int*, void*, lapack_int*, void*, lapack_int*, lapack_int*);
-void LAPACK_ZGEQRF(lapack_int*, lapack_int*, void*, lapack_int*, void*, lapack_int*, lapack_int*);
+void LAPACK_SGEQRF(lapack_int*, lapack_int*, float*, lapack_int*, float*, float*, lapack_int*, lapack_int*);
+void LAPACK_DGEQRF(lapack_int*, lapack_int*, double*, lapack_int*, double*, double*, lapack_int*, lapack_int*);
+void LAPACK_CGEQRF(lapack_int*, lapack_int*, void*, lapack_int*, void*, void*, lapack_int*, lapack_int*);
+void LAPACK_ZGEQRF(lapack_int*, lapack_int*, void*, lapack_int*, void*, void*, lapack_int*, lapack_int*);
+
+// laswap name
+#define LAPACK_SLASWP LAPACK_NAME(slaswp, SLASWP)
+#define LAPACK_DLASWP LAPACK_NAME(dlaswp, DLASWP)
+#define LAPACK_CLASWP LAPACK_NAME(claswp, CLASWP)
+#define LAPACK_ZLASWP LAPACK_NAME(zlaswp, ZLASWP)
+
+// laswp signature
+void LAPACK_SLASWP(lapack_int*, float*, lapack_int*, lapack_int*, lapack_int*, lapack_int*, lapack_int*);
+void LAPACK_DLASWP(lapack_int*, double*, lapack_int*, lapack_int*, lapack_int*, lapack_int*, lapack_int*);
+void LAPACK_CLASWP(lapack_int*, void*, lapack_int*, lapack_int*, lapack_int*, lapack_int*, lapack_int*);
+void LAPACK_ZLASWP(lapack_int*, void*, lapack_int*, lapack_int*, lapack_int*, lapack_int*, lapack_int*);
 
 // potrf name
 #define LAPACK_SPOTRF LAPACK_NAME(spotrf, SPOTRF)

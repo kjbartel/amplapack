@@ -64,4 +64,3 @@ amplapack_status amplapack_zpotrf(char uplo, int n, amplapack_dcomplex* a, int l
 }
 
 } // extern "C"
-

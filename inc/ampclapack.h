@@ -75,15 +75,15 @@ enum amplapack_status
 // LAPACK Routines
 //---------------------------------------------------------------------------- 
 
-AMPLAPACK_DLL amplapack_status amplapack_sgetrf(int m, int n, float* a, int lda, int* info);
-AMPLAPACK_DLL amplapack_status amplapack_dgetrf(int m, int n, double* a, int lda, int* info);
-AMPLAPACK_DLL amplapack_status amplapack_cgetrf(int m, int n, amplapack_fcomplex* a, int lda, int* info);
-AMPLAPACK_DLL amplapack_status amplapack_zgetrf(int m, int n, amplapack_dcomplex* a, int lda, int* info);
+AMPLAPACK_DLL amplapack_status amplapack_sgetrf(int m, int n, float* a, int lda, int* ipiv, int* info);
+AMPLAPACK_DLL amplapack_status amplapack_dgetrf(int m, int n, double* a, int lda, int* ipiv, int* info);
+AMPLAPACK_DLL amplapack_status amplapack_cgetrf(int m, int n, amplapack_fcomplex* a, int lda, int* ipiv, int* info);
+AMPLAPACK_DLL amplapack_status amplapack_zgetrf(int m, int n, amplapack_dcomplex* a, int lda, int* ipiv, int* info);
 
-AMPLAPACK_DLL amplapack_status amplapack_sgeqrf(char uplo, int n, float* a, int lda, int* info);
-AMPLAPACK_DLL amplapack_status amplapack_dgeqrf(char uplo, int n, double* a, int lda, int* info);
-AMPLAPACK_DLL amplapack_status amplapack_cgeqrf(char uplo, int n, amplapack_fcomplex* a, int lda, int* info);
-AMPLAPACK_DLL amplapack_status amplapack_zgeqrf(char uplo, int n, amplapack_dcomplex* a, int lda, int* info);
+AMPLAPACK_DLL amplapack_status amplapack_sgeqrf(int m, int n, float* a, int lda, float* tau, int* info);
+AMPLAPACK_DLL amplapack_status amplapack_dgeqrf(int m, int n, double* a, int lda, double* tau, int* info);
+AMPLAPACK_DLL amplapack_status amplapack_cgeqrf(int m, int n, amplapack_fcomplex* a, int lda, amplapack_fcomplex* tau, int* info);
+AMPLAPACK_DLL amplapack_status amplapack_zgeqrf(int m, int n, amplapack_dcomplex* a, int lda, amplapack_dcomplex* tau, int* info);
 
 AMPLAPACK_DLL amplapack_status amplapack_spotrf(char uplo, int n, float* a, int lda, int* info);
 AMPLAPACK_DLL amplapack_status amplapack_dpotrf(char uplo, int n, double* a, int lda, int* info);

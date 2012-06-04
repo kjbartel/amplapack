@@ -35,5 +35,6 @@
     <ClCompile Include="src\potrf.cpp">
       <Filter>source</Filter>
     </ClCompile>
+    <ClCompile Include="src\amplapack_runtime.cpp" />
   </ItemGroup>
 </Project>

@@ -263,9 +263,6 @@ void potrf(const concurrency::accelerator_view& av, enum class option::uplo uplo
                     potf2<storage_type>(av, uplo, a_sub);
                 else if (location == block_factor_location::host)
                     host::potrf<storage_type>(av, uplo, a_sub);
-
-                // answer is complete in this section; copy to host
-                a_sub.synchronize_async();
             }
             catch(const data_error_exception& e)
             {
@@ -299,9 +296,6 @@ void potrf(const concurrency::accelerator_view& av, enum class option::uplo uplo
                         array_view<const value_type,2> a_sub = get_sub_matrix<storage_type>(a, index<2>(j,j), extent<2>(m_,m_));
                         array_view<value_type,2> b_sub = get_sub_matrix<storage_type>(a, index<2>(j,j+jb), extent<2>(m_,n_));
                         ampblas::trsm(av, AmpblasLeft, AmpblasUpper, AmpblasTrans, AmpblasNonUnit, value_type(1), a_sub, b_sub);
-
-                        // this data has been finalized
-                        b_sub.synchronize_async();
                     }
                 }
             }
@@ -324,7 +318,7 @@ void potrf(const concurrency::accelerator_view& av, enum class option::uplo uplo
                 {
                     array_view<const value_type,2> a_sub = get_sub_matrix<storage_type>(a, index<2>(j,0), extent<2>(n_,k_));
                     array_view<value_type,2> c_sub = get_sub_matrix<storage_type>(a, index<2>(j,j), extent<2>(n_,n_));
-                    ampblas::syrk(av, AmpblasUpper, AmpblasTrans, value_type(-1), a_sub, value_type(1), c_sub);
+                    ampblas::syrk(av, AmpblasLower, AmpblasNoTrans, value_type(-1), a_sub, value_type(1), c_sub);
                 }
             }
 
@@ -338,9 +332,6 @@ void potrf(const concurrency::accelerator_view& av, enum class option::uplo uplo
                     potf2<storage_type>(av, uplo, a_sub);
                 else if (location == block_factor_location::host)
                     host::potrf<storage_type>(av, uplo, a_sub);
-
-                // answer is complete in this section; copy to host
-                a_sub.synchronize_async();
             }
             catch(const data_error_exception& e)
             {
@@ -374,9 +365,6 @@ void potrf(const concurrency::accelerator_view& av, enum class option::uplo uplo
                         array_view<const value_type,2> a_sub = get_sub_matrix<storage_type>(a, index<2>(j,j), extent<2>(n_,n_));
                         array_view<value_type,2> b_sub = get_sub_matrix<storage_type>(a, index<2>(j+jb,j), extent<2>(m_,n_));
                         ampblas::trsm(av, AmpblasRight, AmpblasLower, AmpblasTrans, AmpblasNonUnit, value_type(1), a_sub, b_sub);
-
-                        // this data has been finalized
-                        b_sub.synchronize_async();
                     }
                 }
             }
@@ -392,7 +380,7 @@ template <enum class option::ordering storage_type, typename value_type>
 void potrf(const concurrency::accelerator_view& av, enum class option::uplo uplo, const concurrency::array_view<value_type,2>& a)
 {
     // TODO: a tuning framework
-    const int block_size = 256;
+    const int block_size = 4;
     const int look_ahead_depth = 1;
 
     _detail::potrf<block_size, look_ahead_depth, storage_type, block_factor_location::host>(av, uplo, a);
@@ -407,10 +395,6 @@ void potrf(const concurrency::accelerator_view& av, enum class option::uplo uplo
 template <typename value_type>
 void potrf(concurrency::accelerator_view& av, char uplo, int n, value_type* a, int lda)
 {
-    // copy to accelerator
-    concurrency::array_view<value_type,2> array_a(n, lda, a);
-    concurrency::array_view<value_type,2> array_view_a_sub = array_a.section(concurrency::index<2>(0,0), concurrency::extent<2>(n,n));
-
     // quick return
     if (n == 0)
         return;
@@ -427,11 +411,21 @@ void potrf(concurrency::accelerator_view& av, char uplo, int n, value_type* a, i
     if (lda < n)
         argument_error(5);
 
-    // forwarding function
-    _detail::potrf<option::ordering::column_major>(av, to_option(uplo), array_view_a_sub);
+    // host views
+    concurrency::array_view<value_type,2> host_view_a(n, lda, a);
+    concurrency::array_view<value_type,2> host_view_a_sub = host_view_a.section(concurrency::index<2>(0,0), concurrency::extent<2>(n,n));
 
-    // wait for all asynchronous transfers to host to complete
-    av.wait();
+    // accelerator array (allocation and copy)
+    concurrency::array<value_type,2> accl_a(host_view_a_sub);
+
+    // accelerator view
+    concurrency::array_view<value_type,2> accl_view_a(accl_a);
+
+    // forwarding function
+    _detail::potrf<option::ordering::column_major>(av, to_option(uplo), accl_view_a);
+
+    // copy back to host
+    concurrency::copy(accl_view_a, host_view_a_sub);
 }
 
 } // namespace amplapack

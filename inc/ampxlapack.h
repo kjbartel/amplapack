@@ -24,31 +24,66 @@
 
 #include "ampclapack.h"
 
+//
+// GETRF
+//
+
 template <typename value_type>
-inline amplapack_status amplapack_potrf(int m, int n, value_type* a, int lda, int* info);
+inline amplapack_status amplapack_getrf(int m, int n, value_type* a, int lda, int* ipiv, int* info);
 
 template <>
-inline amplapack_status amplapack_potrf(int m, int n, float* a, int lda, int* info) 
+inline amplapack_status amplapack_getrf(int m, int n, float* a, int lda, int* ipiv, int* info) 
 {
-    return amplapack_spotrf(m, n, a, lda, info);
+    return amplapack_sgetrf(m, n, a, lda, ipiv, info);
 }
 
 template <>
-inline amplapack_status amplapack_potrf(int m, int n, double* a, int lda, int* info) 
+inline amplapack_status amplapack_getrf(int m, int n, double* a, int lda, int* ipiv, int* info) 
 {
-    return amplapack_dpotrf(m, n, a, lda, info);
+    return amplapack_dgetrf(m, n, a, lda, ipiv, info);
 }
 
 template <>
-inline amplapack_status amplapack_potrf(int m, int n, amplapack_fcomplex* a, int lda, int* info) 
+inline amplapack_status amplapack_getrf(int m, int n, amplapack_fcomplex* a, int lda, int* ipiv, int* info) 
 {
-    return amplapack_cpotrf(m, n, a, lda, info);
+    return amplapack_cgetrf(m, n, a, lda, ipiv, info);
 }
 
 template <>
-inline amplapack_status amplapack_potrf(int m, int n, amplapack_dcomplex* a, int lda, int* info) 
+inline amplapack_status amplapack_getrf(int m, int n, amplapack_dcomplex* a, int lda, int* ipiv, int* info) 
 {
-    return amplapack_zpotrf(m, n, a, lda, info);
+    return amplapack_zgetrf(m, n, a, lda, ipiv, info);
+}
+
+//
+// POTRF
+//
+
+template <typename value_type>
+inline amplapack_status amplapack_potrf(char uplo, int n, value_type* a, int lda, int* info);
+
+template <>
+inline amplapack_status amplapack_potrf(char uplo, int n, float* a, int lda, int* info) 
+{
+    return amplapack_spotrf(uplo, n, a, lda, info);
+}
+
+template <>
+inline amplapack_status amplapack_potrf(char uplo, int n, double* a, int lda, int* info) 
+{
+    return amplapack_dpotrf(uplo, n, a, lda, info);
+}
+
+template <>
+inline amplapack_status amplapack_potrf(char uplo, int n, amplapack_fcomplex* a, int lda, int* info) 
+{
+    return amplapack_cpotrf(uplo, n, a, lda, info);
+}
+
+template <>
+inline amplapack_status amplapack_potrf(char uplo, int n, amplapack_dcomplex* a, int lda, int* info) 
+{
+    return amplapack_zpotrf(uplo, n, a, lda, info);
 }
 
 #endif // AMPXLAPACK_H

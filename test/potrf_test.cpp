@@ -9,10 +9,10 @@
 #include "lapack_host.h"
 
 template <typename value_type>
-void potrf_test(char uplo, int n, int lda_offset = 0)
+void do_potrf_test(char uplo, int n, int lda_offset = 0)
 {
     // header
-    std::cout << "Testing xPOTRF for UPLO=" << uplo << " N=" << n << " LDA=" << n+lda_offset << std::endl;
+    std::cout << "Testing xPOTRF for UPLO=" << uplo << " N=" << n << " LDA=" << n+lda_offset << "... ";
 
     // create data
     int lda = n + lda_offset;
@@ -64,16 +64,22 @@ void potrf_test(char uplo, int n, int lda_offset = 0)
         break;
     }
 
-    if ( status == amplapack_success )
+    if (status == amplapack_success)
     {
         // reconstruction
         if (uplo == 'L' || uplo == 'l')
         {
             // reflect Ain
             for (int j = 0; j < n; j++)
+            {
                 for (int i = 0; i < n; i++)
-                    if (i < j)
+                {
+                    if (j > i)
+                    {
                         a_in[j*lda+i] = a_in[i*lda+j];
+                    }
+                }
+            }
 
             // a = a - l*l'
             gemm('n', 't', n, n, n, value_type(1), a.data(), lda, a.data(), lda, value_type(-1), a_in.data(), lda);
@@ -82,9 +88,15 @@ void potrf_test(char uplo, int n, int lda_offset = 0)
         {   
             // reflect Ain
             for (int j = 0; j < n; j++)
+            {
                 for (int i = 0; i < n; i++)
+                {
                     if (i > j)
-                        a_in[i*lda+j] = a_in[j*lda+i];
+                    {
+                        a_in[j*lda+i] = a_in[i*lda+j];
+                    }
+                }
+            }
 
             // a = a - u'*u
             gemm('t', 'n', n, n, n, value_type(1), a.data(), lda, a.data(), lda, value_type(-1), a_in.data(), lda);
@@ -95,17 +107,9 @@ void potrf_test(char uplo, int n, int lda_offset = 0)
     }
 }
 
-int main()
+void potrf_test()
 {
-    // quick tests
-    potrf_test<float>('L', 256);
-    potrf_test<float>('U', 256);
-    potrf_test<float>('L', 512, 2);
-    potrf_test<float>('U', 512, 2);
-
     // performance tests
-    potrf_test<float>('L', 4096);
-    
-    // requires full doubles!
-    // potrf_test<double>('U', 256);
+    do_potrf_test<float>('L', 1024);
+    do_potrf_test<float>('U', 1024);
 }

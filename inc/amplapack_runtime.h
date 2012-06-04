@@ -33,66 +33,71 @@
 
 namespace amplapack {
 
+// options
+namespace option {
+    enum class ordering {row_major, column_major};
+    enum class transpose {no_trans, trans, conj_trans};
+    enum class uplo {upper, lower};
+    enum class diag {non_unit, unit};
+    enum class side {left, right};
+} // namespace option
+
+// exeptions
+class argument_error_exception
+{
+public:
+    argument_error_exception(unsigned int index)
+        : index(index) 
+    {}
+
+    // return index of invalid parameter
+    unsigned int get() const
+    {
+        return index;
+    }
+
+private:
+    unsigned int index;
+};
+
+inline void argument_error(unsigned int index) { throw argument_error_exception(index); }
+
+class data_error_exception
+{
+public:
+    data_error_exception(unsigned int index)
+        : index(index) 
+    {}
+
+    // return location of data error
+    unsigned int get() const
+    {
+        return index;
+    }
+
+private:
+    unsigned int index;
+};
+
+inline void data_error(unsigned int index) { throw data_error_exception(index); }
+
+class runtime_error_exception {};
+
+inline void runtime_error() { throw runtime_error_exception(); }
+
 // casts to internal complex types
-ampblas::complex<float>* amplapack_cast(amplapack_fcomplex* ptr) 
+inline ampblas::complex<float>* amplapack_cast(amplapack_fcomplex* ptr) 
 { 
     return reinterpret_cast<ampblas::complex<float>*>(ptr); 
 }
 
-ampblas::complex<double>* amplapack_cast(amplapack_dcomplex* ptr)
+inline ampblas::complex<double>* amplapack_cast(amplapack_dcomplex* ptr)
 { 
     return reinterpret_cast<ampblas::complex<double>*>(ptr); 
 }
 
 // exception safe execution wrapper
-amplapack_status safe_call_interface(std::function<void(concurrency::accelerator_view& av)>& functor, int& info)
-{
-    try
-    {
-        // for now, simply use the default view
-        concurrency::accelerator_view av(concurrency::accelerator().default_view);
-
-        // safely call the amplack routine with the specific view
-        functor(av);
-    }
-    catch(const data_error_exception& e)
-    {
-        // in traditional LAPACK interface a positive info represents a data error
-        // this data error differs from routine to routine, but is typically used to indicate a specific point of failure
-        info = e.get();
-        return amplapack_data_error;
-    }
-    catch(const argument_error_exception& e)
-    {
-        // in traditional LAPACK interfaces a negative info represents a parameter error
-        info = -static_cast<int>(e.get());
-        return amplapack_argument_error;
-    }
-    catch(const runtime_error_exception&)
-    {
-        // this typically indicates an algorithmic error
-        return amplapack_internal_error;
-    }
-    catch (const std::bad_alloc&)
-    {
-        return amplapack_memory_error;
-    }
-    catch(const concurrency::runtime_exception& e)
-    {
-        // 
-        info = e.get_error_code();
-        return amplapack_runtime_error;
-    }
-    catch(...)
-    {
-        // this should not be encountered under normal operation
-        return amplapack_unknown_error;
-    }
-
-    // no error!
-    info = 0;
-    return amplapack_success;
-}
+amplapack_status safe_call_interface(std::function<void(concurrency::accelerator_view& av)>& functor, int& info);
 
 // creates a row or column vector from a 2d array with either the 1st or 2nd dimension being 1 
 template <typename value_type>
@@ -115,11 +120,6 @@ public:
         else if (base_view.extent[0] == 1)
         {
             direction = 1;            
-        }
-        else
-        {
-            // must be a logical 2d vector 
-            runtime_error();
         }
 
         extent = concurrency::extent<1>(base_view.extent[direction]);
@@ -186,6 +186,33 @@ int require_square(const concurrency::array_view<value_type,2>& a)
         runtime_error();
 
     return a.extent[0];
+}
+
+template <enum class option::ordering storage_type, typename value_type>
+int get_rows(const concurrency::array_view<value_type,2>& a)
+{
+    if (storage_type == option::ordering::column_major)
+        return a.extent[1];
+    else
+        return a.extent[0];
+}
+
+template <enum class option::ordering storage_type, typename value_type>
+int get_cols(const concurrency::array_view<value_type,2>& a)
+{
+    if (storage_type == option::ordering::column_major)
+        return a.extent[0];
+    else
+        return a.extent[1];
+}
+
+template <enum class option::ordering storage_type, typename value_type>
+int get_leading_dimension(const concurrency::array_view<value_type,2>& a)
+{
+    if (storage_type == option::ordering::column_major)
+        return a.extent[1];
+    else
+        return a.extent[0];
 }
 
 // checks returns from a host LAPACK call
