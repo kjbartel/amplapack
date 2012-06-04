@@ -132,7 +132,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <LargeAddressAware>true</LargeAddressAware>
-      <AdditionalDependencies>$(LAPACK_LIB_FILES_32);kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies);$(LAPACK_LIB_PATH_32)</AdditionalDependencies>
+      <AdditionalDependencies>$(LAPACK_LIB_FILES_32);%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(LAPACK_LIB_PATH_32);</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -180,8 +180,9 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <LargeAddressAware>true</LargeAddressAware>
-      <AdditionalDependencies>$(LAPACK_LIB_FILES_32);user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies);$(LAPACK_LIB_PATH_32)</AdditionalDependencies>
+      <AdditionalDependencies>$(LAPACK_LIB_FILES_32);%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(LAPACK_LIB_PATH_32);</AdditionalLibraryDirectories>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
