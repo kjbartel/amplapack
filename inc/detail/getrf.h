@@ -195,7 +195,7 @@ void getrf(const concurrency::accelerator_view& av, concurrency::array_view<valu
             int m_ = m;
             int n_ = j;
             array_view<value_type,2> a_sub = get_sub_matrix<storage_type>(a, index<2>(0,0), extent<2>(m_,n_));
-            
+
             laswp<storage_type>(av, a_sub, j, j+jb, ipiv);
         }
 
@@ -208,19 +208,7 @@ void getrf(const concurrency::accelerator_view& av, concurrency::array_view<valu
                 int n_ = n-j-jb;
                 array_view<value_type,2> a_sub = get_sub_matrix<storage_type>(a, index<2>(0,j+jb), extent<2>(m_,n_));
 
-                // TEMP
-                std::vector<value_type> a_pre(m_*n_);
-                concurrency::copy(a_sub, a_pre.begin());
-
-                // !
-                std::vector<int> ipiv_host(std::min(m,n));
-                concurrency::copy(ipiv, ipiv_host.begin());
-              
                 laswp<storage_type>(av, a_sub, j, j+jb, ipiv);
-
-                // TEMP!
-                std::vector<value_type> a_post(m_*n_);
-                concurrency::copy(a_sub, a_post.begin());
             }
 
             // compute block row of U
@@ -230,6 +218,7 @@ void getrf(const concurrency::accelerator_view& av, concurrency::array_view<valu
 
                 array_view<const value_type,2> a_sub = get_sub_matrix<storage_type>(a, index<2>(j,j), extent<2>(m_,m_));
                 array_view<value_type,2> b_sub = get_sub_matrix<storage_type>(a, index<2>(j,j+jb), extent<2>(m_,n_));
+
                 ampblas::trsm(av, AmpblasLeft, AmpblasLower, AmpblasNoTrans, AmpblasUnit, value_type(1), a_sub, b_sub);
             }
 
@@ -244,6 +233,7 @@ void getrf(const concurrency::accelerator_view& av, concurrency::array_view<valu
                 array_view<const value_type,2> a_sub = get_sub_matrix<storage_type>(a, index<2>(j+jb,j), extent<2>(m_,k_));
                 array_view<const value_type,2> b_sub = get_sub_matrix<storage_type>(a, index<2>(j,j+jb), extent<2>(k_,n_));
                 array_view<value_type,2> c_sub = get_sub_matrix<storage_type>(a, index<2>(j+jb,j+jb), extent<2>(m_,n_));
+
                 ampblas::gemm(av, AmpblasNoTrans, AmpblasNoTrans, value_type(-1), a_sub, b_sub, value_type(1), c_sub);
             }
         }
@@ -262,7 +252,7 @@ template <enum class option::ordering storage_type, typename value_type>
 void getrf(const concurrency::accelerator_view& av, concurrency::array_view<value_type,2>& a, concurrency::array_view<int,1>& ipiv)
 {
     // TODO: a tuning framework
-    const int block_size = 128;
+    const int block_size = 256;
     const int look_ahead_depth = 1;
 
     _detail::getrf<block_size, look_ahead_depth, storage_type, block_factor_location::host>(av, a, ipiv);
@@ -303,6 +293,10 @@ void getrf(concurrency::accelerator_view& av, int m, int n, value_type* a, int l
         return;
 
     // error checking
+    if (m < 0)
+        argument_error(2);
+    if (n < 0)
+        argument_error(3);
     if (a == nullptr)
         argument_error(4);
     if (lda < m)

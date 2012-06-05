@@ -56,6 +56,37 @@ inline amplapack_status amplapack_getrf(int m, int n, amplapack_dcomplex* a, int
 }
 
 //
+// GEQRF
+//
+
+template <typename value_type>
+inline amplapack_status amplapack_geqrf(int m, int n, value_type* a, int lda, value_type* tau, int* info);
+
+template <>
+inline amplapack_status amplapack_geqrf(int m, int n, float* a, int lda, float* tau, int* info)
+{
+    return amplapack_sgeqrf(m, n, a, lda, tau, info);
+}
+
+template <>
+inline amplapack_status amplapack_geqrf(int m, int n, double* a, int lda, double* tau, int* info)
+{
+    return amplapack_dgeqrf(m, n, a, lda, tau, info);
+}
+
+template <>
+inline amplapack_status amplapack_geqrf(int m, int n, amplapack_fcomplex* a, int lda, amplapack_fcomplex* tau, int* info)
+{
+    return amplapack_cgeqrf(m, n, a, lda, tau, info);
+}
+
+template <>
+inline amplapack_status amplapack_geqrf(int m, int n, amplapack_dcomplex* a, int lda, amplapack_dcomplex* tau, int* info)
+{
+    return amplapack_zgeqrf(m, n, a, lda, tau, info);
+}
+
+//
 // POTRF
 //
 

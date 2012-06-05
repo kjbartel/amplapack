@@ -18,10 +18,21 @@ value_type random_value(value_type min, value_type max)
 }
 
 template <typename value_type>
+double gflops(double sec, double m, double n)
+{
+    double operation_count = m*n*n - double(1)/double(3)*n*n*n;
+
+    return operation_count / (sec * double(1e9));
+}
+
+template <typename value_type>
 void do_getrf_test(int m, int n, int lda_offset = 0)
 {
     // header
     std::cout << "Testing xGETRF for M=" << m << " N=" << n << " LDA=" << m+lda_offset << "... ";
+
+    // performance timer
+    high_resolution_timer timer;
 
     // create data
     int k = std::min(m,n);
@@ -48,7 +59,10 @@ void do_getrf_test(int m, int n, int lda_offset = 0)
     std::vector<value_type> a_in(a);
     
     int info;
+
+    timer.restart();
     amplapack_status status = amplapack_getrf(m, n, a.data(), lda, ipiv.data(), &info);
+    double sec = timer.elapsed();
 
     switch(status)
     {
@@ -100,7 +114,7 @@ void do_getrf_test(int m, int n, int lda_offset = 0)
         gemm('n', 'n', m, n, k, value_type(1), l.data(), lda, u.data(), lda, value_type(-1), a_in.data(), lda);
 
         // norm
-        std::cout << " Error = " << one_norm(n, n, a_in.data(), lda) << std::endl;
+        std::cout << " Error = " << one_norm(n, n, a_in.data(), lda) << " GFLOPs = " << gflops<value_type>(sec, m, n) << std::endl;
     }
 }
 

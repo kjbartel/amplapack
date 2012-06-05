@@ -93,6 +93,18 @@ void LAPACK_DGEQRF(lapack_int*, lapack_int*, double*, lapack_int*, double*, doub
 void LAPACK_CGEQRF(lapack_int*, lapack_int*, void*, lapack_int*, void*, void*, lapack_int*, lapack_int*);
 void LAPACK_ZGEQRF(lapack_int*, lapack_int*, void*, lapack_int*, void*, void*, lapack_int*, lapack_int*);
 
+// larft name
+#define LAPACK_SLARFT LAPACK_NAME(slarft, SLARFT)
+#define LAPACK_DLARFT LAPACK_NAME(dlarft, DLARFT)
+#define LAPACK_CLARFT LAPACK_NAME(clarft, CLARFT)
+#define LAPACK_ZLARFT LAPACK_NAME(zlarft, ZLARFT)
+
+// larft signature
+void LAPACK_SLARFT(char*, char*, lapack_int*, lapack_int*, float*, lapack_int*, float*, float*, lapack_int*);
+void LAPACK_DLARFT(char*, char*, lapack_int*, lapack_int*, double*, lapack_int*, double*, double*, lapack_int*);
+void LAPACK_CLARFT(char*, char*, lapack_int*, lapack_int*, void*, lapack_int*, void*, void*, lapack_int*);
+void LAPACK_ZLARFT(char*, char*, lapack_int*, lapack_int*, void*, lapack_int*, void*, void*, lapack_int*);
+
 // laswap name
 #define LAPACK_SLASWP LAPACK_NAME(slaswp, SLASWP)
 #define LAPACK_DLASWP LAPACK_NAME(dlaswp, DLASWP)
@@ -104,6 +116,18 @@ void LAPACK_SLASWP(lapack_int*, float*, lapack_int*, lapack_int*, lapack_int*, l
 void LAPACK_DLASWP(lapack_int*, double*, lapack_int*, lapack_int*, lapack_int*, lapack_int*, lapack_int*);
 void LAPACK_CLASWP(lapack_int*, void*, lapack_int*, lapack_int*, lapack_int*, lapack_int*, lapack_int*);
 void LAPACK_ZLASWP(lapack_int*, void*, lapack_int*, lapack_int*, lapack_int*, lapack_int*, lapack_int*);
+
+// orgqr/ungqr name
+#define LAPACK_SORGQR LAPACK_NAME(sorgqr, SORGQR)
+#define LAPACK_DORGQR LAPACK_NAME(dorgqr, DORGQR)
+#define LAPACK_CUNGQR LAPACK_NAME(cungqr, CUNGQR)
+#define LAPACK_ZUNGQR LAPACK_NAME(zungqr, ZUNGQR)
+
+// orgqr/ungqr signature
+void LAPACK_SORGQR(lapack_int*, lapack_int*, lapack_int*, float*, lapack_int*, float*, float*, lapack_int*, lapack_int*);
+void LAPACK_DORGQR(lapack_int*, lapack_int*, lapack_int*, double*, lapack_int*, double*, double*, lapack_int*, lapack_int*);
+void LAPACK_CUNGQR(lapack_int*, lapack_int*, lapack_int*, void*, lapack_int*, void*, void*, lapack_int*, lapack_int*);
+void LAPACK_ZUNGQR(lapack_int*, lapack_int*, lapack_int*, void*, lapack_int*, void*, void*, lapack_int*, lapack_int*);
 
 // potrf name
 #define LAPACK_SPOTRF LAPACK_NAME(spotrf, SPOTRF)

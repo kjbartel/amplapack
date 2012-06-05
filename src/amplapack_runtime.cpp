@@ -6,6 +6,16 @@ namespace amplapack {
 // exception safe execution wrapper
 amplapack_status safe_call_interface(std::function<void(concurrency::accelerator_view& av)>& functor, int& info)
 {
+    const bool allow_unsafe = false;
+
+    if (allow_unsafe)
+    {
+        // only used for debugging
+        concurrency::accelerator_view av(concurrency::accelerator().default_view);
+        functor(av);
+        return amplapack_success;
+    }
+
     try
     {
         // for now, simply use the default view
@@ -38,7 +48,7 @@ amplapack_status safe_call_interface(std::function<void(concurrency::accelerator
     }
     catch(const concurrency::runtime_exception& e)
     {
-        // 
+        // return the AMP runtime error code
         info = e.get_error_code();
         return amplapack_runtime_error;
     }

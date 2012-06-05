@@ -17,5 +17,5 @@ int main()
 {
     potrf_test();
     getrf_test();
-    //geqrf_test();
+    geqrf_test();
 }

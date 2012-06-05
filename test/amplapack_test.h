@@ -3,6 +3,7 @@
 #define AMPLAPACK_TEST_H
 
 #include <limits>
+#include <memory>
 
 // test listing
 void potrf_test();
@@ -34,5 +35,19 @@ value_type one_norm(int m, int n, value_type* a, int lda)
 
     return norm/n;
 }
+
+class high_resolution_timer
+{
+public:
+    high_resolution_timer();
+    ~high_resolution_timer();
+
+    void restart();
+    double elapsed();
+
+private:
+    struct impl;
+    std::unique_ptr<impl> pimpl;
+};
 
 #endif // AMPLAPACK_TEST_H

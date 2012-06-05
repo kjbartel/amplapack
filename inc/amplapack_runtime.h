@@ -40,6 +40,8 @@ namespace option {
     enum class uplo {upper, lower};
     enum class diag {non_unit, unit};
     enum class side {left, right};
+    enum class direction {forward, backward};
+    enum class storage {column, row};
 } // namespace option
 
 // exeptions
@@ -179,8 +181,8 @@ inline enum class option::uplo to_option(const char& uplo)
 }
 
 // runtime checks
-template <typename value_type>
-int require_square(const concurrency::array_view<value_type,2>& a)
+template <typename value_type, template <typename,int> class container_type>
+int require_square(const container_type<value_type,2>& a)
 {
     if (a.extent[0] != a.extent[1])
         runtime_error();
@@ -188,8 +190,8 @@ int require_square(const concurrency::array_view<value_type,2>& a)
     return a.extent[0];
 }
 
-template <enum class option::ordering storage_type, typename value_type>
-int get_rows(const concurrency::array_view<value_type,2>& a)
+template <enum class option::ordering storage_type, typename value_type, template <typename,int> class container_type>
+int get_rows(const container_type<value_type,2>& a)
 {
     if (storage_type == option::ordering::column_major)
         return a.extent[1];
@@ -197,8 +199,8 @@ int get_rows(const concurrency::array_view<value_type,2>& a)
         return a.extent[0];
 }
 
-template <enum class option::ordering storage_type, typename value_type>
-int get_cols(const concurrency::array_view<value_type,2>& a)
+template <enum class option::ordering storage_type, typename value_type, template <typename,int> class container_type>
+int get_cols(const container_type<value_type,2>& a)
 {
     if (storage_type == option::ordering::column_major)
         return a.extent[0];
@@ -206,8 +208,8 @@ int get_cols(const concurrency::array_view<value_type,2>& a)
         return a.extent[1];
 }
 
-template <enum class option::ordering storage_type, typename value_type>
-int get_leading_dimension(const concurrency::array_view<value_type,2>& a)
+template <enum class option::ordering storage_type, typename value_type, template <typename,int> class container_type>
+int get_leading_dimension(const container_type<value_type,2>& a)
 {
     if (storage_type == option::ordering::column_major)
         return a.extent[1];
@@ -225,17 +227,13 @@ inline void info_check(int info)
 }
 
 // data layout aware sub-matrix extraction method
-template <enum class option::ordering storage_type, typename value_type>
-concurrency::array_view<value_type,2> get_sub_matrix(const concurrency::array_view<value_type,2>& matrix, const concurrency::index<2>& location, const concurrency::extent<2>& size)
+template <enum class option::ordering storage_type, typename value_type, template <typename,int> class container_type>
+concurrency::array_view<value_type,2> get_sub_matrix(const container_type<value_type,2>& matrix, const concurrency::index<2>& location, const concurrency::extent<2>& size)
 {
     if (storage_type == option::ordering::row_major)
-    {
         return matrix.section(location, size);
-    }
     else
-    {
         return matrix.section(concurrency::index<2>(location[1], location[0]), concurrency::extent<2>(size[1], size[0]));
-    }
 }
 
 } // namesapce amplapack

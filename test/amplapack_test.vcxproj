@@ -22,6 +22,7 @@
     <ClCompile Include="amplapack_test.cpp" />
     <ClCompile Include="geqrf_test.cpp" />
     <ClCompile Include="getrf_test.cpp" />
+    <ClCompile Include="high_resolution_timer.cpp" />
     <ClCompile Include="potrf_test.cpp" />
   </ItemGroup>
   <ItemGroup>

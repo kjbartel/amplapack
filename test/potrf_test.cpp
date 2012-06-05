@@ -9,10 +9,21 @@
 #include "lapack_host.h"
 
 template <typename value_type>
+double gflops(double sec, double n)
+{
+    double operation_count = double(1)/double(3)*n*n*n;
+
+    return operation_count / (sec * double(1e9));
+}
+
+template <typename value_type>
 void do_potrf_test(char uplo, int n, int lda_offset = 0)
 {
     // header
     std::cout << "Testing xPOTRF for UPLO=" << uplo << " N=" << n << " LDA=" << n+lda_offset << "... ";
+
+    // performance timer
+    high_resolution_timer timer;
 
     // create data
     int lda = n + lda_offset;
@@ -40,7 +51,10 @@ void do_potrf_test(char uplo, int n, int lda_offset = 0)
     std::vector<value_type> a_in(a);
     
     int info;
+
+    timer.restart();
     amplapack_status status = amplapack_potrf(uplo, n, &a.at(0), lda, &info);
+    double sec = timer.elapsed();
 
     switch(status)
     {
@@ -103,7 +117,7 @@ void do_potrf_test(char uplo, int n, int lda_offset = 0)
         }
 
         // norm
-        std::cout << " Error = " << one_norm(n, n, a_in.data(), lda) << std::endl;
+        std::cout << " Error = " << one_norm(n, n, a_in.data(), lda) << " GLFOPs = " << gflops<value_type>(sec, n) << std::endl;
     }
 }
 

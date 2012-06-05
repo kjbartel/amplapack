@@ -380,7 +380,7 @@ template <enum class option::ordering storage_type, typename value_type>
 void potrf(const concurrency::accelerator_view& av, enum class option::uplo uplo, const concurrency::array_view<value_type,2>& a)
 {
     // TODO: a tuning framework
-    const int block_size = 4;
+    const int block_size = 256;
     const int look_ahead_depth = 1;
 
     _detail::potrf<block_size, look_ahead_depth, storage_type, block_factor_location::host>(av, uplo, a);
