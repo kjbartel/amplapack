@@ -9,21 +9,13 @@
 #include "lapack_host.h"
 
 template <typename value_type>
-value_type random_value(value_type min, value_type max)
-{
-    value_type val = value_type(rand()) / value_type(RAND_MAX);
-    val *= (max-min);
-    val += min;
-    return val;
-}
-
-template <typename value_type>
 double gflops(double sec, double m, double n)
 {
     const double k = std::min(m,n);
     const double l = std::max(m,n);
+    const double c = is_complex<value_type>::value ? double(4) : double(1);
 
-    double operation_count = double(2)*l*k*k - double(2)/double(3)*k*k*k;
+    double operation_count =  c * double(2)*l*k*k - double(2)/double(3)*k*k*k;
 
     return operation_count / (sec * double(1e9));
 }
@@ -32,7 +24,7 @@ template <typename value_type>
 void do_geqrf_test(int m, int n, int lda_offset = 0)
 {
     // header
-    std::cout << "Testing xGEQRF for M=" << m << " N=" << n << " LDA=" << m+lda_offset << "... ";
+    std::cout << "Testing " << type_prefix<value_type>() << "GEQRF for M=" << m << " N=" << n << " LDA=" << m+lda_offset << "... ";
 
     // performance timer
     high_resolution_timer timer;
@@ -64,7 +56,7 @@ void do_geqrf_test(int m, int n, int lda_offset = 0)
     int info;
 
     timer.restart();
-    amplapack_status status = amplapack_geqrf(m, n, a.data(), lda, tau.data(), &info);
+    amplapack_status status = amplapack_geqrf(m, n, cast(a.data()), lda, cast(tau.data()), &info);
     double sec = timer.elapsed();
 
     switch(status)
@@ -79,7 +71,7 @@ void do_geqrf_test(int m, int n, int lda_offset = 0)
         std::cout << "Argument Error @ " << -info << std::endl;
         break;
     case amplapack_runtime_error:
-        std::cout << "Runtime Error" << std::endl;
+        std::cout << "Runtime Error: " << info << std::endl;
         break;
     case amplapack_memory_error:
         std::cout << "Insuffecient Memory" << std::endl;
@@ -108,16 +100,8 @@ void do_geqrf_test(int m, int n, int lda_offset = 0)
             }
         }
 
-        // work query
-        int info;
-        int lwork = -1;
-        value_type work_size;
-        LAPACK_SORGQR(&m, &m, &k, q.data(), &ldq, tau.data(), &work_size, &lwork, &info);
-        lwork = int(work_size);
-        std::vector<value_type> work(lwork);
-
         // generate q
-        LAPACK_SORGQR(&m, &m, &k, q.data(), &ldq, tau.data(), work.data(), &lwork, &info);
+        orgqr(m, m, k, q.data(), ldq, tau.data());
 
         // a = a - qr
         gemm('n', 'n', m, k, m, value_type(1), q.data(), ldq, r.data(), ldr, value_type(-1), a_in.data(), lda);
@@ -126,7 +110,7 @@ void do_geqrf_test(int m, int n, int lda_offset = 0)
         std::cout << " Error = " << one_norm(n, n, a_in.data(), lda);
 
         // gflops
-        std::cout << " GFLOPs = " << gflops<value_type>(1.0, m,n) << std::endl; 
+        std::cout << " GFLOPs = " << gflops<value_type>(sec, m,n) << std::endl; 
     }
 }
 
@@ -134,4 +118,5 @@ void geqrf_test()
 {
     // quick tests
     do_geqrf_test<float>(1024, 1024); 
+    do_geqrf_test<fcomplex>(1024, 1024);
 }

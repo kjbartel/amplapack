@@ -19,6 +19,12 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\amplapack_runtime.cpp" />
+    <ClCompile Include="src\geqrf.cpp" />
+    <ClCompile Include="src\getrf.cpp" />
+    <ClCompile Include="src\potrf.cpp" />
+  </ItemGroup>
+  <ItemGroup>
     <ClInclude Include="inc\ampclapack.h" />
     <ClInclude Include="inc\amplapack.h" />
     <ClInclude Include="inc\amplapack_config.h" />
@@ -28,12 +34,6 @@
     <ClInclude Include="inc\detail\getrf.h" />
     <ClInclude Include="inc\detail\potrf.h" />
     <ClInclude Include="inc\lapack_host.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="src\amplapack_runtime.cpp" />
-    <ClCompile Include="src\geqrf.cpp" />
-    <ClCompile Include="src\getrf.cpp" />
-    <ClCompile Include="src\potrf.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCTargetsPath Condition="'$(VCTargetsPath11)' != '' and '$(VSVersion)' == '' and '$(VisualStudioVersion)' == ''">$(VCTargetsPath11)</VCTargetsPath>
@@ -125,7 +125,7 @@
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
       <FloatingPointModel>Fast</FloatingPointModel>
       <OpenMPSupport>false</OpenMPSupport>
-      <AdditionalIncludeDirectories>$(AMPBLAS_INC_PATH);$(ProjectDir)\inc</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\inc;..\ampblas\ampblas\inc;</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4505</DisableSpecificWarnings>
     </ClCompile>
     <Link>
@@ -133,7 +133,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <LargeAddressAware>true</LargeAddressAware>
       <AdditionalDependencies>$(LAPACK_LIB_FILES_32);%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(LAPACK_LIB_PATH_32);</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(OutDir);$(LAPACK_LIB_PATH_32);</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -149,7 +149,7 @@
       </EnableEnhancedInstructionSet>
       <FloatingPointModel>Fast</FloatingPointModel>
       <OpenMPSupport>false</OpenMPSupport>
-      <AdditionalIncludeDirectories>$(AMPBLAS_INC_PATH);$(ProjectDir)\inc</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\inc;..\ampblas\ampblas\inc;</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4505</DisableSpecificWarnings>
     </ClCompile>
     <Link>
@@ -157,7 +157,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <LargeAddressAware>true</LargeAddressAware>
       <AdditionalDependencies>$(LAPACK_LIB_FILES_64);%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(LAPACK_LIB_PATH_64);</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(OutDir);$(LAPACK_LIB_PATH_64);</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -171,7 +171,7 @@
       <SDLCheck>true</SDLCheck>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
       <OpenMPSupport>false</OpenMPSupport>
-      <AdditionalIncludeDirectories>$(AMPBLAS_INC_PATH);$(ProjectDir)\inc</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\inc;..\ampblas\ampblas\inc;</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4505</DisableSpecificWarnings>
     </ClCompile>
     <Link>
@@ -181,7 +181,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <LargeAddressAware>true</LargeAddressAware>
       <AdditionalDependencies>$(LAPACK_LIB_FILES_32);%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(LAPACK_LIB_PATH_32);</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(OutDir);$(LAPACK_LIB_PATH_32);</AdditionalLibraryDirectories>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
   </ItemDefinitionGroup>
@@ -197,7 +197,7 @@
       <EnableEnhancedInstructionSet>
       </EnableEnhancedInstructionSet>
       <OpenMPSupport>false</OpenMPSupport>
-      <AdditionalIncludeDirectories>$(AMPBLAS_INC_PATH);$(ProjectDir)\inc</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\inc;..\ampblas\ampblas\inc;</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4505</DisableSpecificWarnings>
     </ClCompile>
     <Link>
@@ -207,7 +207,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <LargeAddressAware>true</LargeAddressAware>
       <AdditionalDependencies>$(LAPACK_LIB_FILES_64);%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(LAPACK_LIB_PATH_64);</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(OutDir);$(LAPACK_LIB_PATH_64);</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

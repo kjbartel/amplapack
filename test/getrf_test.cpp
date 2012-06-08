@@ -9,18 +9,10 @@
 #include "lapack_host.h"
 
 template <typename value_type>
-value_type random_value(value_type min, value_type max)
-{
-    value_type val = value_type(rand()) / value_type(RAND_MAX);
-    val *= (max-min);
-    val += min;
-    return val;
-}
-
-template <typename value_type>
 double gflops(double sec, double m, double n)
 {
-    double operation_count = m*n*n - double(1)/double(3)*n*n*n;
+    const double c = is_complex<value_type>::value ? double(4) : double(1);
+    double operation_count = c * m*n*n - double(1)/double(3)*n*n*n;
 
     return operation_count / (sec * double(1e9));
 }
@@ -29,7 +21,7 @@ template <typename value_type>
 void do_getrf_test(int m, int n, int lda_offset = 0)
 {
     // header
-    std::cout << "Testing xGETRF for M=" << m << " N=" << n << " LDA=" << m+lda_offset << "... ";
+    std::cout << "Testing " << type_prefix<value_type>() << "GETRF for M=" << m << " N=" << n << " LDA=" << m+lda_offset << "... ";
 
     // performance timer
     high_resolution_timer timer;
@@ -61,7 +53,7 @@ void do_getrf_test(int m, int n, int lda_offset = 0)
     int info;
 
     timer.restart();
-    amplapack_status status = amplapack_getrf(m, n, a.data(), lda, ipiv.data(), &info);
+    amplapack_status status = amplapack_getrf(m, n, cast(a.data()), lda, ipiv.data(), &info);
     double sec = timer.elapsed();
 
     switch(status)
@@ -122,4 +114,5 @@ void getrf_test()
 {
     // quick tests
     do_getrf_test<float>(1024, 1024); 
+    do_getrf_test<fcomplex>(1024, 1024);
 }
