@@ -18,6 +18,9 @@
 *
 *---------------------------------------------------------------------------*/
 
+#ifndef AMPLAPACK_POTRF_H
+#define AMPLAPACK_POTRF_H
+
 #include "amplapack_config.h"
 
 // external lapack functions
@@ -245,8 +248,10 @@ void potrf(const concurrency::accelerator_view& av, enum class uplo uplo, const 
     }
 }
 
+} // namespace _detail
+
 //
-// Forwarding Function
+// Array View Interface
 //
 
 template <enum class ordering storage_type, typename value_type>
@@ -258,8 +263,6 @@ void potrf(const concurrency::accelerator_view& av, enum class uplo uplo, const 
 
     _detail::potrf<block_size, look_ahead_depth, storage_type>(av, uplo, a);
 }
-
-} // namespace _detail
 
 //
 // Host Interface Function
@@ -295,10 +298,12 @@ void potrf(concurrency::accelerator_view& av, char uplo, int n, value_type* a, i
     concurrency::array_view<value_type,2> accl_view_a(accl_a);
 
     // forwarding function
-    _detail::potrf<ordering::column_major>(av, to_option(uplo), accl_view_a);
+    potrf<ordering::column_major>(av, to_option(uplo), accl_view_a);
 
     // copy back to host
     concurrency::copy(accl_view_a, host_view_a_sub);
 }
 
 } // namespace amplapack
+
+#endif // AMPLAPACK_POTRF_H

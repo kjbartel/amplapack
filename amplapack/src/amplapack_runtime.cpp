@@ -1,5 +1,4 @@
 #include "amplapack_runtime.h"
-#include "amplapack.h"
 
 namespace amplapack {
 

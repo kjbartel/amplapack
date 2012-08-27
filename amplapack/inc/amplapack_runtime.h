@@ -18,14 +18,12 @@
  *
  *---------------------------------------------------------------------------*/
 
-#pragma once
 #ifndef AMPLAPACK_RUNTIME_H
 #define AMPLAPACK_RUNTIME_H
 
 #include <functional>
 #include <amp.h>
 
-#include "amplapack.h"
 #include "ampclapack.h"
 #include "ampblas_complex.h"
 

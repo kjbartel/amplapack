@@ -15,15 +15,16 @@
  *---------------------------------------------------------------------------
  * 
  * amplapack.h
+ * 
+ * This headers includes all of the functions contained within AMPLAPACK.
  *
  *---------------------------------------------------------------------------*/
 
 #ifndef AMPLAPACK_H
 #define AMPLAPACK_H
 
-namespace amplapack {
-
-    // TODO!
-}
+#include "detail/geqrf.h"
+#include "detail/getrf.h"
+#include "detail/potrf.h"
 
 #endif // AMPLAPACK_H

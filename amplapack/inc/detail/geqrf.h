@@ -18,6 +18,9 @@
  *
  *---------------------------------------------------------------------------*/
 
+#ifndef AMPLAPACK_GEQRF_H
+#define AMPLAPACK_GEQRF_H
+
 #include "amplapack_config.h"
 
 // external lapack functions
@@ -335,20 +338,6 @@ void geqrf(const concurrency::accelerator_view& av, concurrency::array_view<valu
     }
 }
 
-//
-// Forwarding Function
-//
-
-template <enum class ordering storage_type, typename value_type>
-void geqrf(const concurrency::accelerator_view& av, concurrency::array_view<value_type,2>& a, concurrency::array_view<value_type,1>& tau)
-{
-    // TODO: a tuning framework
-    const int block_size = 256;
-    const int look_ahead_depth = 1;
-
-    _detail::geqrf<block_size, look_ahead_depth, storage_type, block_factor_location::host>(av, a, tau);
-}
-
 // this is a work around until VS std::bind can accept more paramaters
 template <typename value_type>
 struct geqrf_params
@@ -371,6 +360,20 @@ void geqrf_unpack(concurrency::accelerator_view& av, const geqrf_params<value_ty
 }
 
 } // namespace _detail
+
+//
+// Array View Interface
+//
+
+template <enum class ordering storage_type, typename value_type>
+void geqrf(const concurrency::accelerator_view& av, concurrency::array_view<value_type,2>& a, concurrency::array_view<value_type,1>& tau)
+{
+    // TODO: a tuning framework
+    const int block_size = 256;
+    const int look_ahead_depth = 1;
+
+    _detail::geqrf<block_size, look_ahead_depth, storage_type, block_factor_location::host>(av, a, tau);
+}
 
 //
 // Host Interface Function
@@ -406,11 +409,13 @@ void geqrf(concurrency::accelerator_view& av, int m, int n, value_type* a, int l
     // accelerator view
     concurrency::array_view<value_type,2> accl_view_a(accl_a);
 
-    // forwarding function
-    _detail::geqrf<ordering::column_major>(av, accl_view_a, host_view_tau);
+    // foward to array view interface
+    geqrf<ordering::column_major>(av, accl_view_a, host_view_tau);
 
     // copy back to host
     concurrency::copy(accl_view_a, host_view_a_sub);
 }
 
 } // namespace amplapack
+
+#endif // AMPLAPACK_GEQRF_H
